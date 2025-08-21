@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Secure Norge – 24/7 Overvåkning</title>
+
+ 
+  <link rel="stylesheet" href="/Dashboard/css/Index.css" />
+  <link rel="stylesheet" href="/Dashboard/css/overvåkning.css" />
+</head>
+<body>
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Hovednavigasjon">
+      <div class="sidebar__brand">
+        <img src="/Dashboard/img/Logo - hvit.png" alt="Secure Norge" class="sidebar__logo" />
+      </div>
+
+      <nav class="nav">
+        <div class="nav__section">Dashboards</div>
+        <a class="nav__link" href="Index.html">Oversikt</a>
+
+        <div class="nav__section">Tjenester</div>
+        <a class="nav__link" href="/Dashboard/html/pen.html">PEN-rapporter</a>
+        <a class="nav__link" href="/Dashboard/html/scanner.html">Sårbarhetsscanning</a>
+        <a class="nav__link nav__link--active" href="/Dashboard/html/overvåkning.html">24/7 overvåkning</a>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Topbar -->
+      <header class="topbar" id="overv">
+        <div class="topbar__inner container">
+          <div class="brand">
+            <span class="brand__text">Secure Norge – 24/7 overvåkning</span>
+          </div>
+
+          <form class="search" role="search">
+            <input class="search__input" type="search" placeholder="Søk i hendelser, alarmer, systemer…" aria-label="Søk" />
+          </form>
+
+          <nav class="actions" aria-label="Hurtigvalg">
+            <button class="btn btn--ghost" type="button" aria-label="Varsler">Varslinger</button>
+            <button class="btn btn--ghost" type="button" aria-label="Innstillinger">Innstillinger</button>
+            <a class="btn btn--ghost" href="/login" aria-label="Logg inn">Logg inn</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="container">
+
+        <!-- KPI-rad for NOC/SOC (statisk demo – valgfritt å koble senere) -->
+        <section class="kpis noc-kpis" aria-label="Nøkkeltall overvåkning">
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">Aktive hendelser</h3></header>
+            <div class="card__body"><div class="kpi__value">8</div><p class="kpi__sub">3 kritiske • 2 høye</p></div>
+          </article>
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">MTTA</h3></header>
+            <div class="card__body"><div class="kpi__value">6 min</div><p class="kpi__sub">Median siste 24t</p></div>
+          </article>
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">Oppetid</h3></header>
+            <div class="card__body"><div class="kpi__value">99.97%</div><p class="kpi__sub">Siste 30 dager</p></div>
+          </article>
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">Isolerte endepunkt</h3></header>
+            <div class="card__body"><div class="kpi__value">2</div><p class="kpi__sub">Manuell isolasjon</p></div>
+          </article>
+        </section>
+
+        <!-- Hovedrutenett -->
+        <section class="overv-grid" aria-label="Overvåkningspaneler">
+          <!-- Live hendelser (DYNAMISK) -->
+          <article class="card live-incidents">
+            <header class="card__header">
+              <h3 class="card__title">Live hendelser</h3>
+              <div class="live__controls">
+                <label class="check"><input type="checkbox" id="onlyCritical"> Kun Kritisk/Høy</label>
+                <label class="check"><input type="checkbox" id="onlyOpen" checked> Kun åpne</label>
+              </div>
+            </header>
+            <div class="card__body">
+              <div class="table-wrapper">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Tid</th>
+                      <th>Alvor</th>
+                      <th>Tittel</th>
+                      <th>System</th>
+                      <th>Pågår</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mon-incidents-body"></tbody>
+                </table>
+              </div>
+              <p class="hint">Denne tabellen oppdateres live via server-sent events.</p>
+            </div>
+          </article>
+
+          <!-- SLA-klokker (visuelt) -->
+          <article class="card sla">
+            <header class="card__header"><h3 class="card__title">SLA klokker</h3></header>
+            <div class="card__body sla__stack">
+              <div class="sla__item">
+                <div class="dial dial--crit"><span>00:12</span></div>
+                <div class="muted">MTTA (kritisk)</div>
+              </div>
+              <div class="sla__item">
+                <div class="dial dial--high"><span>00:25</span></div>
+                <div class="muted">MTTR (høy)</div>
+              </div>
+              <div class="sla__item">
+                <div class="dial dial--all"><span>03:40</span></div>
+                <div class="muted">Siden siste P1</div>
+              </div>
+            </div>
+          </article>
+
+        
+          <!-- Tjenestestatus (manuell oversikt – valgfritt å koble mot checks) -->
+          <article class="card svc">
+            <header class="card__header"><h3 class="card__title">Tjenestestatus</h3></header>
+            <div class="card__body">
+              <ul class="svc__list">
+                <li><span class="dot dot--ok"></span> EDR-samler (North Europe) <span class="tag">OK</span></li>
+                <li><span class="dot dot--warn"></span> Telemetri broker (West Europe) <span class="tag">Høy latency</span></li>
+                <li><span class="dot dot--ok"></span> Logg-arkiv S3 <span class="tag">OK</span></li>
+                <li><span class="dot dot--down"></span> IOC-feed #2 <span class="tag">Nede</span></li>
+              </ul>
+            </div>
+          </article>
+        </section>
+
+        <!-- Varslingslogg (timeline – statisk demo) -->
+        <section class="card timeline" aria-label="Varslingslogg">
+          <header class="card__header"><h3 class="card__title">Varslingslogg</h3></header>
+          <div class="card__body">
+            <ol class="timeline__list">
+              <li><div class="tl__time">09:46</div><div class="tl__body"><div><span class="sev sev--critical">Kritisk</span> – P1 varslet vaktlag A</div><div class="muted">Ticket #INC-8123 opprettet</div></div></li>
+              <li><div class="tl__time">09:01</div><div class="tl__body"><div><span class="sev sev--high">Høy</span> – IOC-match på C2-domene</div><div class="muted">Auto-isolasjon foreslått</div></div></li>
+              <li><div class="tl__time">08:15</div><div class="tl__body"><div><span class="sev sev--medium">Middels</span> – Ny policy utrullet</div><div class="muted">Streng modus → Finans</div></div></li>
+            </ol>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="footer container">
+        <small>© 2025 Secure Norge – 24/7 overvåkning (prototype)</small>
+      </footer>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="/overvåkning.js" defer></script>
+  <script src="/Index.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+/* Secure Norge — scanner.css (trimmet & slått sammen) */
+:root{
+  --bg:#0f1115; --surface:#171a20; --card:#1b1f27; --ink:#e5e7eb; --muted:#9aa3af; --line:#2a303a;
+  --brand:#ffffff; --accent:#8b9cff;
+  --sev-critical:#f87171; --sev-high:#fb923c; --sev-medium:#fbbf24; --sev-low:#34d399;
+  --st-open:#ef4444; --st-wip:#f59e0b; --st-done:#10b981;
+  --radius:14px; --shadow:0 2px 10px rgba(0,0,0,.45);
+}
+
+/* Stabil scrollbar for å hindre at layout "hopper" */
+html{scrollbar-gutter:stable both-edges} body{overflow-y:scroll}
+
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+
+/* Keep page width stable when text grows: wrap instead of widening */
+table { table-layout: fixed; width: 100%; }
+th, td { overflow-wrap: anywhere; word-break: break-word; }
+
+/* Layout helpers */
+.content{display:flex;flex-direction:column;min-height:100dvh}
+.container{max-width:1120px;margin-inline:auto;padding-inline:16px}
+
+/* Topbar */
+.topbar{position:sticky;top:0;z-index:10;background:rgba(23,26,32,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.topbar__inner{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:800}
+.brand__text{color:var(--brand)}
+
+/* Buttons */
+.btn{--bgc:#202430;--fgc:#e5e7eb;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bgc);color:var(--fgc);cursor:pointer;box-shadow:var(--shadow);transition:transform .06s ease,background .15s ease,border-color .15s ease}
+.btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(0)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn--ghost{background:transparent;border-color:transparent;color:var(--muted);box-shadow:none}
+.btn--outline{background:#12151b;border-color:var(--line);color:#d1d5db}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card__header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0}
+.card__title{margin:0;font-size:14px;color:var(--muted);font-weight:700;letter-spacing:.01em}
+.card__body{padding:12px 16px 16px}
+
+/* Scanner layout */
+.scanner{margin-top:14px}
+.scanner__header h2{margin:0 0 6px}
+.muted{color:var(--muted)} .hint{color:var(--muted);font-size:12px}
+.scanner-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:920px){.scanner-grid{grid-template-columns:1fr}}
+
+/* Form */
+.scan-form{display:grid;gap:12px}
+.form-grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:640px){.form-grid{grid-template-columns:1fr}}
+.form-row{display:grid;gap:6px}
+.form-row label{font-size:12px;color:var(--muted)}
+.form-row input[type="url"], .form-row select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:#12151b;color:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.form-row input[type="url"]::placeholder{color:#6b7280}
+.form-row select{background-image:url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");background-repeat:no-repeat;background-position:right 10px center;background-size:16px 16px;padding-right:36px}
+.form-row input[type="range"]{accent-color:var(--sev-high)}
+.form-actions{display:flex;gap:8px}
+
+/* Queue */
+.queue{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.queue-item{display:grid;gap:6px;background:#161a22;border:1px solid var(--line);border-radius:12px;padding:10px}
+.queue-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.queue-meta{color:var(--muted);font-size:12px}
+.progress{height:8px;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#0d0f13}
+.progress__bar{height:100%;width:0%;background:linear-gradient(90deg,var(--sev-low),var(--sev-high))}
+
+/* KPI */
+.kpi-vertical{display:flex;gap:12px}
+.kpi__value{font-size:26px;font-weight:800;color:#ff0000}
+.kpi__sub{font-size:12px;color:var(--muted);margin-top:4px}
+.kpi-mini .kpi__value{font-size:22px}
+
+/* Filter chips */
+.chip-row{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#12151b;color:#d1d5db;border-radius:999px;padding:6px 10px;cursor:pointer;user-select:none}
+.chip--on{background:#1c212a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Findings table */
+.table-card{margin-top:12px}
+.table-wrapper{overflow:auto;border:1px solid var(--line);border-radius:12px}
+.table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.table thead th{position:sticky;top:0;background:#1f232d;text-align:left;font-weight:700;padding:12px 14px;border-bottom:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.table tbody td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.table tbody tr:hover{background:rgba(255,255,255,.04)}
+
+/* Severity badges */
+.sev{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:4px 8px;border-radius:999px;color:#0b0d12;text-transform:uppercase}
+.sev::before{content:"";width:8px;height:8px;border-radius:50%;display:inline-block}
+.sev--critical{background:color-mix(in srgb,var(--sev-critical) 30%,#1b1f27);color:#fff}.sev--critical::before{background:var(--sev-critical)}
+.sev--high{background:color-mix(in srgb,var(--sev-high) 30%,#1b1f27);color:#fff}.sev--high::before{background:var(--sev-high)}
+.sev--medium{background:color-mix(in srgb,var(--sev-medium) 35%,#1b1f27);color:#111}.sev--medium::before{background:var(--sev-medium)}
+.sev--low{background:color-mix(in srgb,var(--sev-low) 35%,#1b1f27);color:#111}.sev--low::before{background:var(--sev-low)}
+
+/* Status chips */
+.st{font-size:12px;font-weight:800;padding:4px 8px;border-radius:999px;color:#fff}
+.st--open{background:var(--st-open)} .st--wip{background:var(--st-wip)} .st--done{background:var(--st-done)}
+
+/* Footer */
+.footer{color:var(--muted);font-size:12px;padding:20px 0 40px;text-align:center}
+
+/* Logo sizing (matcher Index) */
+.topbar .container{max-width:none;padding-inline:16px}
+.brand img{display:block;height:28px;width:auto;object-fit:contain}
+
+/* === Dybde-slideren (#depth): tydelig spor med progress, stabil høyde === */
+#depth{--slider-h:6px;-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;border-radius:999px;cursor:pointer}
+#depth::-webkit-slider-runnable-track{height:var(--slider-h);background:transparent;border-radius:999px}
+#depth::-moz-range-track{height:var(--slider-h);background:var(--line);border-radius:999px}
+#depth::-moz-range-progress{height:var(--slider-h);background:var(--sev-high);border-radius:999px}
+#depth::-webkit-slider-thumb{-webkit-appearance:none;height:16px;width:16px;border-radius:60%;background:var(--sev-high);border:2px solid #0f1115;margin-top:calc((var(--slider-h) - 16px)/2);position:relative;z-index:2}
+#depth::-moz-range-thumb{height:16px;width:16px;border-radius:50%;background:var(--sev-high);border:2px solid #0f1115}
+
+/* === Harmonisering med Index.css (lette, ikke-inngripende overrides) === */
+/* 1) Fjern venstre "gutter" som skjøv sidebaren inn fra kanten */
+html{ scrollbar-gutter: stable; } /* var: stable both-edges */
+
+/* 2) Match topbar-luminans og -oppførsel med resten av appen (Index.css) */
+.topbar{
+  background: rgba(27,30,36,0.95); /* samme som Index.css */
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+}
+
+/* 3) Samme skyggeintensitet som i Index.css */
+:root{
+  --shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+/* 4) Sørg for at sidebar faktisk ligger helt flush mot venstre kant på alle skjermer */
+body{ margin-left: 0; } /* sikkerhetsnett hvis UA/layout tilfører marginer */
+/* === Slutt harmonisering === */
+
+/* === Konsistent spacing mellom alle bokser (12px) === */
+:root { --space: 12px; }
+
+/* Topp-margin på seksjonen + vertikal rytme mellom dens direkte barn */
+.scanner { margin-top: var(--space); }
+.scanner > * + * { margin-top: var(--space); }
+
+/* Grid-gap mellom venstre/høyre kolonne */
+.scanner-grid { gap: var(--space); margin-top: var(--space); }
+
+/* Vertikal avstand mellom kort inni hver kolonne */
+.scanner-left,
+.scanner-right { display: grid; gap: var(--space); }
+
+/* Ekstra: sikre at tabellkortet følger samme rytme */
+.table-card { margin-top: var(--space); }

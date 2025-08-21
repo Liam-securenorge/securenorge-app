@@ -1,0 +1,145 @@
+/* Side-spesifikk stil for 24/7 overvåkning.
+   Bruker fargevariabler og basekomponenter fra index.css. */
+
+/* KPI-rad: litt tettere spacing på denne siden */
+.noc-kpis { margin-top: 12px; }
+
+/* Grid-layout for overvåkningspanelene */
+.overv-grid{
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+@media (max-width: 1100px){
+  .overv-grid{ grid-template-columns: 1.5fr 1fr; }
+}
+@media (max-width: 820px){
+  .overv-grid{ grid-template-columns: 1fr; }
+}
+
+/* Live hendelser – bordert tabell arver base-stil */
+.live-incidents .live__controls{
+  display:flex; gap:12px; align-items:center;
+  font-size: 13px; color: var(--muted);
+}
+
+
+/* Liten pulsende statusprikk i header */
+.status-light{
+  width:10px; height:10px; border-radius:50%;
+  background: var(--sev-low);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--sev-low) 40%, transparent);
+  animation: pulse 1.6s ease-out infinite;
+}
+@keyframes pulse{
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sev-low) 40%, transparent); }
+  70%  { box-shadow: 0 0 0 10px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* SLA-klokker (CSS-dial) */
+.sla__grid{
+  display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px;
+}
+@media (max-width: 520px){ .sla__grid{ grid-template-columns: 1fr; } }
+
+.sla__item{ display:grid; gap:8px; justify-items:center; }
+.dial{
+  --size: 120px;
+  width: var(--size); height: var(--size);
+  border-radius: 50%;
+  display:grid; place-items:center;
+  position: relative;
+  background: conic-gradient(var(--sev-low) 0 220deg, #2d323b 220deg 360deg);
+  border:1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.dial::after{
+  content:"";
+  position:absolute; inset: 18%;
+  background: var(--card);
+  border-radius: 50%;
+  border:1px solid var(--line);
+}
+.dial > span{
+  position: relative; z-index: 1;
+  font-weight: 800; font-size: 22px; color:#fff;
+}
+
+/* Variasjoner for alvorlighet */
+.dial--crit{ background: conic-gradient(var(--sev-critical) 0 260deg, #2d323b 260deg 360deg); }
+.dial--high{ background: conic-gradient(var(--sev-high) 0 200deg, #2d323b 200deg 360deg); }
+.dial--all { background: conic-gradient(var(--sev-medium) 0 320deg, #2d323b 320deg 360deg); }
+
+/* Tjenestestatus */
+.svc__list{
+  list-style:none; padding:0; margin:0; display:grid; gap:10px;
+}
+.svc__list li{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:10px;
+  background:#111418;
+}
+.dot{
+  width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px;
+}
+.dot--ok{ background: var(--sev-low); }
+.dot--warn{ background: var(--sev-high); }
+.dot--down{ background: var(--sev-critical); }
+
+/* Timer-badge i tabellen */
+.timer{
+  display:inline-block; font-variant-numeric: tabular-nums;
+  padding:2px 6px; border-radius: 6px; background:#111418; border:1px solid var(--line); color:var(--ink);
+}
+
+/* Timeline (varslingslogg) */
+.timeline{ margin-top: 12px; }
+.timeline__list{
+  list-style:none; padding:0; margin:0; position:relative;
+}
+.timeline__list::before{
+  content:""; position:absolute; left: 8px; top:0; bottom:0;
+  width:2px; background: #232831; border-radius: 999px;
+}
+.timeline__list > li{
+  position:relative; padding-left: 28px; margin: 10px 0;
+}
+.timeline__list > li::before{
+  content:""; position:absolute; left:2px; top:6px; width:12px; height:12px; border-radius:50%;
+  background: var(--sev-high); box-shadow: 0 0 0 3px rgba(251,146,60,.18);
+}
+.timeline__list > li:nth-child(1)::before{ background: var(--sev-critical); box-shadow: 0 0 0 3px rgba(248,113,113,.25); }
+.tl__time{ font-size:12px; color: var(--muted); }
+.tl__body{ display:grid; gap:4px; }
+
+/* Interaksjons-cursor på klikkbare elementer (om ikke allerede i base) */
+.oncall__btn,
+.live-incidents .check input,
+.live-incidents .check label {
+  cursor: pointer;
+}
+
+/* Stack SLA-klokkene vertikalt uansett skjermbredde */
+.sla__grid{
+  display: grid;
+  grid-template-columns: 1fr !important; /* overstyr tidligere 3-kol layout */
+  gap: 12px;
+}
+
+/* små hjelpere for overvåkning */
+.grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media (max-width: 800px){ .grid-2{ grid-template-columns:1fr; } }
+
+.checks{ list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+.check{ display:grid; grid-template-columns:auto 1fr auto auto; gap:8px; align-items:center; }
+.check .check__url{ color:var(--muted); }
+.check .check__status{ font-size:12px; color:var(--muted); }
+.dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+.dot--ok{ background: var(--sev-low); }
+.dot--bad{ background: var(--sev-high); }
+
+.row-actions .btn{ padding:6px 10px; }
+.sla-eta{ font-weight:700; }
+.sla--breach{ color: var(--sev-critical); }

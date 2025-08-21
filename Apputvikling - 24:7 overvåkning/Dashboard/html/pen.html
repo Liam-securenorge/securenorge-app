@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PEN-Tester</title>
+
+  <!-- Felles base-stil + side-spesifikk -->
+  <link rel="stylesheet" href="/Dashboard/css/Index.css" />
+  <link rel="stylesheet" href="/Dashboard/css/pen.css" />
+</head>
+<body>
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Hovednavigasjon">
+      <div class="sidebar__brand">
+        <img src="/Dashboard/img/Logo - hvit.png" alt="Secure Norge" class="sidebar__logo" />
+      </div>
+
+      <nav class="nav">
+        <div class="nav__section">Dashboards</div>
+        <a class="nav__link" href="Index.html">Oversikt</a>
+
+        <div class="nav__section">Tjenester</div>
+        <a class="nav__link" href="/Dashboard/html/scanner.html">Sårbarhetsscanning</a>
+        <a class="nav__link" href="/Dashboard/html/overvåkning.html">24/7 overvåkning</a>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Topbar -->
+      <header class="topbar" id="pen">
+        <div class="topbar__inner container">
+          <div class="brand">
+            <span class="brand__text"></span>
+          </div>
+
+          <form class="search" role="search">
+            <input class="search__input" type="search" placeholder="Søk i oppdrag, rapporter, funn…" aria-label="Søk" />
+          </form>
+
+          <nav class="actions" aria-label="Hurtigvalg">
+            <button class="btn btn--ghost" type="button" aria-label="Varsler">Varslinger</button>
+            <button class="btn btn--ghost" type="button" aria-label="Innstillinger">Innstillinger</button>
+            <button class="btn btn--ghost" type="button" aria-label="Logg inn">Logg inn</button>
+          </nav>
+        </div>
+      </header>
+
+      <main class="container">
+        <!-- Topp-actions + filtre -->
+        <section class="pen-actions" aria-label="Handlinger og filtre">
+          <div class="left">
+            <button class="btn btn--outline" type="button">Start nytt oppdrag</button>
+            <button class="btn btn--outline" type="button">Importer rapport</button>
+          </div>
+          <div class="right">
+            <div class="chip-row" role="group" aria-label="Filtrer på omfang">
+              <button type="button" class="chip chip--on" data-filter="all">Alle</button>
+              <button type="button" class="chip" data-filter="external">Ekstern</button>
+              <button type="button" class="chip" data-filter="internal">Intern</button>
+              <button type="button" class="chip" data-filter="webapp">Webapp</button>
+              <button type="button" class="chip" data-filter="api">API</button>
+              <button type="button" class="chip" data-filter="cloud">Cloud</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 🔎 Hurtig IP-scan -->
+        <section class="card quickscan" aria-label="Hurtig IP-scan">
+          <header class="card__header">
+            <h3 class="card__title">Hurtig IP-scan</h3>
+          </header>
+          <div class="card__body">
+            <form id="ipScanForm" class="qs-form" novalidate>
+              <div class="qs-row">
+                <label for="ipInput">IP-adresse</label>
+                <input id="ipInput" name="ip" type="text" inputmode="numeric"
+                       pattern="^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.|$)){4}$"
+                       placeholder="192.0.2.10" required />
+              </div>
+              <div class="qs-actions">
+                <button class="btn" type="submit">Kjør scan</button>
+                <button class="btn btn--outline" type="reset">Nullstill</button>
+              </div>
+              <small class="field__error" id="ipErr" aria-live="polite"></small>
+            </form>
+
+            <div id="ipScanResult" class="qs-result" hidden>
+              <div class="qs-grid">
+                <div class="qs-kpi">
+                  <div class="kpi__value" id="qsOpenPorts">0</div>
+                  <div class="kpi__sub">Åpne porter</div>
+                </div>
+                <div class="qs-kpi">
+                  <div class="kpi__value" id="qsServices">0</div>
+                  <div class="kpi__sub">Tjenester</div>
+                </div>
+                <div class="qs-kpi">
+                  <div class="kpi__value" id="qsRisk">Lav</div>
+                  <div class="kpi__sub">Risiko</div>
+                </div>
+              </div>
+
+              <div class="table-wrapper" id="qsTableWrap" hidden>
+                <table class="table">
+                  <thead>
+                    <tr><th>Port</th><th>Proto</th><th>Tjeneste</th><th>Status</th></tr>
+                  </thead>
+                  <tbody id="qsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- KPI-er -->
+        <section class="kpis" aria-label="Nøkkeltall">
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">Aktive oppdrag</h3></header>
+            <div class="card__body"><div class="kpi__value">5</div><p class="kpi__sub">2 eksterne • 2 webapp • 1 API</p></div>
+          </article>
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">Åpne funn</h3></header>
+            <div class="card__body"><div class="kpi__value">47</div><p class="kpi__sub">6 kritiske • 11 høye</p></div>
+          </article>
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">Neste levering</h3></header>
+            <div class="card__body"><div class="kpi__value">2 d</div><p class="kpi__sub">Kl. 12:00 fredag</p></div>
+          </article>
+          <article class="card kpi">
+            <header class="card__header"><h3 class="card__title">Funn/oppdrag</h3></header>
+            <div class="card__body"><div class="kpi__value">9.4</div><p class="kpi__sub">Siste 90 dager</p></div>
+          </article>
+        </section>
+
+        <!-- Hovedgrid -->
+        <section class="pen-grid" aria-label="Paneler">
+          <!-- Venstre kolonne -->
+          <div class="col-main">
+            <!-- Aktive oppdrag -->
+            <article class="card">
+              <header class="card__header">
+                <h3 class="card__title">Aktive oppdrag</h3>
+              </header>
+              <div class="card__body">
+                <div class="table-wrapper">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Oppdrag</th>
+                        <th>Type</th>
+                        <th>Vindu</th>
+                        <th>Lead</th>
+                        <th>Fremdrift</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>FIN – Ekstern infrastruktur</td>
+                        <td><span class="tag">Ekstern</span></td>
+                        <td>12–16 Aug</td>
+                        <td>nora</td>
+                        <td>
+                          <div class="progress"><div class="progress__bar progress--high" style="width:72%"></div></div>
+                          <small class="muted">72%</small>
+                        </td>
+                        <td><span class="st st--wip">Pågår</span></td>
+                      </tr>
+                      <tr>
+                        <td>APP – Webapp (kundeportal)</td>
+                        <td><span class="tag">Webapp</span></td>
+                        <td>18–22 Aug</td>
+                        <td>ola</td>
+                        <td>
+                          <div class="progress"><div class="progress__bar progress--medium" style="width:34%"></div></div>
+                          <small class="muted">34%</small>
+                        </td>
+                        <td><span class="st st--open">Åpen</span></td>
+                      </tr>
+                      <tr>
+                        <td>API – OpenAPI v2</td>
+                        <td><span class="tag">API</span></td>
+                        <td>13–20 Aug</td>
+                        <td>mia</td>
+                        <td>
+                          <div class="progress"><div class="progress__bar progress--low" style="width:88%"></div></div>
+                          <small class="muted">88%</small>
+                        </td>
+                        <td><span class="st st--wip">Pågår</span></td>
+                      </tr>
+                      <tr>
+                        <td>INT – Intern nettverkstest</td>
+                        <td><span class="tag">Intern</span></td>
+                        <td>05–15 Aug</td>
+                        <td>per</td>
+                        <td>
+                          <div class="progress"><div class="progress__bar progress--low" style="width:100%"></div></div>
+                          <small class="muted">100%</small>
+                        </td>
+                        <td><span class="st st--done">Løst</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </article>
+
+            <!-- Funn (liste) -->
+            <article class="card table-card">
+              <header class="card__header">
+                <h3 class="card__title">Funn (siste 30 dager)</h3>
+              </header>
+              <div class="card__body">
+                <div class="table-wrapper">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Alvor</th>
+                        <th>Tittel</th>
+                        <th>Mål</th>
+                        <th>Impact</th>
+                        <th>Status</th>
+                        <th>Sist oppdatert</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="sev sev--critical">Kritisk</span></td>
+                        <td>Pre-auth RCE via deserialisering</td>
+                        <td>portal.secure.no</td>
+                        <td>Systemkompromittering</td>
+                        <td><span class="st st--open">Åpen</span></td>
+                        <td>18.08.2025</td>
+                      </tr>
+                      <tr>
+                        <td><span class="sev sev--high">Høy</span></td>
+                        <td>JWT-kid algorithm confusion</td>
+                        <td>api.secure.no</td>
+                        <td>Auth bypass</td>
+                        <td><span class="st st--wip">Pågår</span></td>
+                        <td>17.08.2025</td>
+                      </tr>
+                      <tr>
+                        <td><span class="sev sev--medium">Middels</span></td>
+                        <td>Reflected XSS i admin-panel</td>
+                        <td>admin.secure.no</td>
+                        <td>Session hijack</td>
+                        <td><span class="st st--open">Åpen</span></td>
+                        <td>17.08.2025</td>
+                      </tr>
+                      <tr>
+                        <td><span class="sev sev--low">Lav</span></td>
+                        <td>Clickjacking uten rammebeskyttelse</td>
+                        <td>app.secure.no</td>
+                        <td>Lav risiko</td>
+                        <td><span class="st st--done">Løst</span></td>
+                        <td>15.08.2025</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="hint">Dette er eksempeldata. Vi kan senere koble til backend/API for sanntid.</p>
+              </div>
+            </article>
+          </div>
+
+          <!-- Høyre kolonne -->
+          <aside class="col-side">
+            <!-- Fordeling (pie) -->
+            <article class="card">
+              <header class="card__header"><h3 class="card__title">Fordeling av funn</h3></header>
+              <div class="card__body">
+                <div class="pie" style="--win:40; --mac:35; --lin:25" role="img" aria-label="Kritisk/Høy/Middels/Lav via farget legend"></div>
+                <ul class="legend">
+                  <li><span class="dot" style="background: var(--sev-critical)"></span>Kritisk 12%</li>
+                  <li><span class="dot" style="background: var(--sev-high)"></span>Høy 28%</li>
+                  <li><span class="dot" style="background: var(--sev-medium)"></span>Middels 41%</li>
+                  <li><span class="dot" style="background: var(--sev-low)"></span>Lav 19%</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Rapporter -->
+            <article class="card">
+              <header class="card__header"><h3 class="card__title">Rapporter</h3></header>
+              <div class="card__body">
+                <ul class="report__list">
+                  <li>
+                    <div>
+                      <strong>FIN-EXT-2025-08</strong>
+                      <div class="muted">v1.2 – QA</div>
+                    </div>
+                    <div class="report__tags">
+                      <span class="tag">PDF</span>
+                      <span class="tag">DOCX</span>
+                      <span class="st st--wip">Pågår</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>APP-PORTAL-2025-08</strong>
+                      <div class="muted">v0.9 – Utkast</div>
+                    </div>
+                    <div class="report__tags">
+                      <span class="tag">PDF</span>
+                      <span class="st st--open">Åpen</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>API-V2-2025-07</strong>
+                      <div class="muted">v1.0 – Levert</div>
+                    </div>
+                    <div class="report__tags">
+                      <span class="tag">PDF</span>
+                      <span class="tag">XLSX</span>
+                      <span class="st st--done">Løst</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Metodikk & omfang -->
+            <article class="card">
+              <header class="card__header"><h3 class="card__title">Metodikk &amp; omfang</h3></header>
+              <div class="card__body">
+                <ul class="bullets">
+                  <li>OWASP ASVS / MASVS for apper</li>
+                  <li>OWASP Top 10 &amp; API Top 10</li>
+                  <li>NIST 800-115 / PTES</li>
+                  <li>ATT&amp;CK mapping per funn</li>
+                  <li>Sosial manipulering (etter avtale)</li>
+                </ul>
+              </div>
+            </article>
+
+            <!-- Tidslinje -->
+            <article class="card timeline">
+              <header class="card__header"><h3 class="card__title">Tidslinje</h3></header>
+              <div class="card__body">
+                <ol class="timeline__list">
+                  <li><div class="tl__time">I dag</div><div class="tl__body">Utkast rapport sendt intern QA</div></li>
+                  <li><div class="tl__time">I går</div><div class="tl__body">Retester kritiske fix</div></li>
+                  <li><div class="tl__time">3 dager</div><div class="tl__body">Scope review &amp; kickoff</div></li>
+                </ol>
+              </div>
+            </article>
+          </aside>
+        </section>
+      </main>
+
+      <footer class="footer container">
+        <small>© 2025 Secure Norge – PEN-rapporter (prototype)</small>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Felles JS -->
+  <script src="/index.js" defer></script>
+
+  <!-- Liten inline-script for hurtig IP-scan (mock) -->
+  <script>
+  (function(){
+    const f = document.getElementById('ipScanForm');
+    if (!f) return;
+    const ipInput = document.getElementById('ipInput');
+    const err = document.getElementById('ipErr');
+    const res = document.getElementById('ipScanResult');
+    const openPortsEl = document.getElementById('qsOpenPorts');
+    const servicesEl = document.getElementById('qsServices');
+    const riskEl = document.getElementById('qsRisk');
+    const tbody = document.getElementById('qsTableBody');
+    const wrap = document.getElementById('qsTableWrap');
+
+    function validIPv4(ip){
+      return /^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.|$)){4}$/.test(ip.trim());
+    }
+
+    f.addEventListener('submit', e => {
+      e.preventDefault();
+      err.textContent = '';
+      const ip = ipInput.value.trim();
+      if (!validIPv4(ip)) {
+        err.textContent = 'Ugyldig IPv4-adresse.';
+        ipInput.focus();
+        return;
+      }
+      // Mock-resultater
+      const mock = [
+        {port: 22,  proto:'tcp', svc:'ssh',   status:'open'},
+        {port: 80,  proto:'tcp', svc:'http',  status:'open'},
+        {port: 443, proto:'tcp', svc:'https', status:'open'}
+      ];
+      res.hidden = false;
+      tbody.innerHTML = mock.map(r => (
+        `<tr><td>${r.port}</td><td>${r.proto}</td><td>${r.svc}</td><td><span class="tag">${r.status}</span></td></tr>`
+      )).join('');
+      wrap.hidden = false;
+      openPortsEl.textContent = mock.length;
+      servicesEl.textContent = new Set(mock.map(r=>r.svc)).size;
+      riskEl.textContent = mock.length >= 3 ? 'Middels' : 'Lav';
+    });
+
+    f.addEventListener('reset', () => {
+      setTimeout(() => {
+        err.textContent = '';
+        res.hidden = true;
+        tbody.innerHTML = '';
+        wrap.hidden = true;
+      }, 0);
+    });
+  })();
+  </script>
+</body>
+</html>

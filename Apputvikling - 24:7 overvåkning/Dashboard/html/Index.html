@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Secure Norge – EDR Console (HTML+CSS)</title>
+
+  <!-- Leaflet (må inn før script.js) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+
+  <!-- Hovedstil -->
+  <link rel="stylesheet" href="/Dashboard/css/Index.css" />
+</head>
+<body>
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Hovednavigasjon">
+      <div class="sidebar__brand">
+        <img src="/Dashboard/img/Logo - hvit.png" alt="Secure Norge" class="sidebar__logo" />
+      </div>
+
+      <nav class="nav">
+        <div class="nav__section">Dashboards</div>
+        <a class="nav__link nav__link--active" href="#oversikt">Oversikt</a>
+
+        <div class="nav__section">Tjenester</div>
+        <a class="nav__link" href="/Dashboard/html/pen.html">PEN-rapporter</a>
+        <a class="nav__link" href="/Dashboard/html/scanner.html">Sårbarhetsscanning</a>
+        <a class="nav__link" href="/Dashboard/html/overvåkning.html">24/7 overvåkning</a>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Topbar -->
+      <header class="topbar" id="oversikt">
+        <div class="topbar__inner container">
+          <div class="brand">
+            <span class="brand__text">Secure Norge - Dashboard</span>
+          </div>
+
+          <form class="search" role="search">
+            <input class="search__input" type="search" placeholder="Søk i alarmer, vertsnavn, brukere…" aria-label="Søk" />
+          </form>
+
+          <nav class="actions" aria-label="Hurtigvalg">
+            <button class="btn btn--ghost" type="button" aria-label="Varsler">Varslinger</button>
+            <button class="btn btn--ghost" type="button" aria-label="Innstillinger">Inntillinger</button>
+            <button class="btn btn--ghost" type="button" aria-label="Innstillinger">Logg inn</button>
+          </nav>
+        </div>
+      </header>
+
+      <main class="container">
+        <!-- Filters -->
+        <section class="filters" aria-label="Filtre">
+          <div class="filter">
+            <label for="time">Tidsrom</label>
+            <select id="time" name="time" disabled>
+              <option>Siste 24t</option>
+              <option selected>Siste 7 dager</option>
+              <option>Siste 30 dager</option>
+            </select>
+          </div>
+
+          <div class="filter">
+            <label for="sev">Alvorsgrad</label>
+            <select id="sev" name="severity" disabled>
+              <option selected>Alle nivå</option>
+              <option>Kritisk</option>
+              <option>Høy</option>
+              <option>Middels</option>
+              <option>Lav</option>
+            </select>
+          </div>
+
+          <div class="filter">
+            <label for="status">Status</label>
+            <select id="status" name="status" disabled>
+              <option selected>Alle statuser</option>
+              <option>Åpen</option>
+              <option>U-Arbeid</option>
+              <option>Løst</option>
+            </select>
+          </div>
+
+          <div class="filter">
+            <label for="plat">Plattform</label>
+            <select id="plat" name="platform" disabled>
+              <option selected>Alle</option>
+              <option>Windows</option>
+              <option>macOS</option>
+              <option>Linux</option>
+            </select>
+          </div>
+
+          <div class="filters__spacer"></div>
+
+          <button class="btn btn--outline" type="button" disabled>Eksporter</button>
+          <button class="btn btn--outline" type="button" disabled>Bulk-handlinger</button>
+        </section>
+
+        <!-- KPIs -->
+        <section class="kpis" aria-label="Nøkkeltall">
+          <article class="card kpi">
+            <header class="card__header">
+              <h3 class="card__title">Endepunkter på nett</h3>
+            </header>
+            <div class="card__body">
+              <div class="kpi__value">7</div>
+              <p class="kpi__sub">2 frakoblet, 1 isolert</p>
+            </div>
+          </article>
+
+          <article class="card kpi">
+            <header class="card__header">
+              <h3 class="card__title">Aktive alarmer</h3>
+            </header>
+            <div class="card__body">
+              <div class="kpi__value">36</div>
+              <p class="kpi__sub">5 kritiske</p>
+            </div>
+          </article>
+
+          <article class="card kpi">
+            <header class="card__header">
+              <h3 class="card__title">Policy-dekning</h3>
+            </header>
+            <div class="card__body">
+              <div class="kpi__value">82%</div>
+              <p class="kpi__sub">Streng / Standard</p>
+            </div>
+          </article>
+
+          <article class="card kpi">
+            <header class="card__header">
+              <h3 class="card__title">Estimert MTTR</h3>
+            </header>
+            <div class="card__body">
+              <div class="kpi__value">3,4 t</div>
+              <p class="kpi__sub">Gj.snitt siste uke</p>
+            </div>
+          </article>
+        </section>
+
+        <!-- Charts -->
+        <section class="charts">
+          <article class="card chart">
+            <header class="card__header">
+              <h3 class="card__title">Alarmer over tid</h3>
+            </header>
+            <div class="card__body">
+              <div class="bar-chart" role="img" aria-label="Antall alarmer de siste 7 dagene fordelt på alvorlighet">
+                <div class="bar" style="--h:75%" title="Dag 1 – 75"></div>
+                <div class="bar" style="--h:40%" title="Dag 2 – 40"></div>
+                <div class="bar" style="--h:55%" title="Dag 3 – 55"></div>
+                <div class="bar" style="--h:90%" title="Dag 4 – 90"></div>
+                <div class="bar" style="--h:60%" title="Dag 5 – 60"></div>
+                <div class="bar" style="--h:45%" title="Dag 6 – 45"></div>
+                <div class="bar" style="--h:70%" title="Dag 7 – 70"></div>
+                <div class="bar-chart__grid" aria-hidden="true"></div>
+              </div>
+              <p class="chart__legend">Summert volum per dag (farger viser estimert miks: kritisk/høy/middels/lav)</p>
+            </div>
+          </article>
+
+          <article class="card chart">
+            <header class="card__header">
+              <h3 class="card__title">OS-fordeling</h3>
+            </header>
+            <div class="card__body">
+              <div class="pie"
+                   style="--win:45; --mac:30; --lin:25"
+                   role="img"
+                   aria-label="Windows 45%, macOS 30%, Linux 25%">
+              </div>
+              <ul class="legend">
+                <li><span class="dot dot--win"></span>Windows 45%</li>
+                <li><span class="dot dot--mac"></span>macOS 30%</li>
+                <li><span class="dot dot--lin"></span>Linux 25%</li>
+              </ul>
+            </div>
+          </article>
+        </section>
+
+        <!-- KART -->
+        <section class="card map-card" aria-label="Kart">
+          <header class="card__header">
+            <h3 class="card__title">Infrastruktur-kart</h3>
+          </header>
+          <div class="card__body">
+            <div id="map" class="map"></div>
+          </div>
+        </section>
+
+        <!-- Table -->
+        <section class="card table-card" aria-label="Deteksjoner">
+          <header class="card__header">
+            <h3 class="card__title">Deteksjoner (eksempeldata)</h3>
+          </header>
+          <div class="card__body">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Tid</th>
+                    <th scope="col">Alvorsgrad</th>
+                    <th scope="col">Tittel</th>
+                    <th scope="col">Vert</th>
+                    <th scope="col">Bruker</th>
+                    <th scope="col">Taktikk/teknikk</th>
+                    <th scope="col">Konfidens</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>18.08.2025 12:04</td>
+                    <td><span class="sev sev--critical">Kritisk</span></td>
+                    <td>Outbound C2 beacon oppdaget</td>
+                    <td>FIN-SRV19-02 <span class="tag">Windows</span></td>
+                    <td>alice</td>
+                    <td>Command &amp; Control • T1027</td>
+                    <td>92%</td>
+                    <td><span class="st st--open">Åpen</span></td>
+                  </tr>
+                  <tr>
+                    <td>18.08.2025 08:51</td>
+                    <td><span class="sev sev--high">Høy</span></td>
+                    <td>RDP brute force-mønster</td>
+                    <td>SALES-WIN10-05 <span class="tag">Windows</span></td>
+                    <td>bob</td>
+                    <td>Initial Access • T1021</td>
+                    <td>85%</td>
+                    <td><span class="st st--wip">Pågår</span></td>
+                  </tr>
+                  <tr>
+                    <td>17.08.2025 23:17</td>
+                    <td><span class="sev sev--medium">Middels</span></td>
+                    <td>Uvanlig admin-gruppeendring</td>
+                    <td>MAC-OPS-03 <span class="tag">macOS</span></td>
+                    <td>dora</td>
+                    <td>Privilege Escalation • T1547</td>
+                    <td>66%</td>
+                    <td><span class="st st--done">Løst</span></td>
+                  </tr>
+                  <tr>
+                    <td>17.08.2025 16:42</td>
+                    <td><span class="sev sev--low">Lav</span></td>
+                    <td>Malicious macro blokkert</td>
+                    <td>QA-MBP-09 <span class="tag">macOS</span></td>
+                    <td>frank</td>
+                    <td>Execution • T1059</td>
+                    <td>48%</td>
+                    <td><span class="st st--done">Løst</span></td>
+                  </tr>
+                  <tr>
+                    <td>16.08.2025 09:05</td>
+                    <td><span class="sev sev--high">Høy</span></td>
+                    <td>Credential dumping-forsøk</td>
+                    <td>ENG-UBU-04 <span class="tag">Linux</span></td>
+                    <td>eve</td>
+                    <td>Credential Access • T1003</td>
+                    <td>79%</td>
+                    <td><span class="st st--open">Åpen</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="hint">Demo-data. Når dere senere ønsker dynamikk kan vi legge til JS/fetch – men nå er alt ren HTML+CSS som ønsket.</p>
+          </div>
+        </section>
+
+        <!-- Placeholder-seksjoner -->
+        <section id="pen" class="card section-placeholder" aria-label="PEN-rapporter">
+          <header class="card__header">
+            <h3 class="card__title">PEN-rapporter</h3>
+          </header>
+          <div class="card__body">
+            <p>Plassholder for PEN-rapporter. Her kan dere liste siste pentest-funn, rapportstatus, nedlastinger m.m.</p>
+          </div>
+        </section>
+
+        <section id="saarbarhet" class="card section-placeholder" aria-label="Sårbarhetsscanning">
+          <header class="card__header">
+            <h3 class="card__title">Sårbarhetsscanning</h3>
+          </header>
+          <div class="card__body">
+            <p>Plassholder for scanninger: CVE-tall, kritiske assets, trendgrafer, osv.</p>
+          </div>
+        </section>
+
+        <section id="overv" class="card section-placeholder" aria-label="24/7 overvåkning">
+          <header class="card__header">
+            <h3 class="card__title">24/7 overvåkning</h3>
+          </header>
+          <div class="card__body">
+            <p>Plassholder for NOC/SOC-visning: vaktplan, pågående hendelser, SLA-tidslinjer.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer container">
+        <small>© 2025 Secure Norge – intern EDR-konsoll (prototype)</small>
+      </footer>
+    </div>
+  </div>
+
+  <!-- INNSTILLINGER POPUP (flyttet inn i body) -->
+  <div id="settingsPopup" class="settings-popup" role="dialog" aria-modal="false" aria-labelledby="settingsTitle" hidden>
+    <header class="settings__header">
+      <h2 id="settingsTitle">Innstillinger</h2>
+      <button type="button" class="settings__close" aria-label="Lukk">✕</button>
+    </header>
+
+    <nav class="settings__tabs" aria-label="Innstillingskategorier">
+      <button class="settings__tab settings__tab--active" data-tab="general">Generelt</button>
+      <button class="settings__tab" data-tab="display">Visning</button>
+      <button class="settings__tab" data-tab="notifications">Varsler</button>
+      <button class="settings__tab" data-tab="security">Sikkerhet</button>
+      <button class="settings__tab" data-tab="data">Data &amp; API</button>
+      <button class="settings__tab" data-tab="org">Organisasjon</button>
+    </nav>
+
+    <div class="settings__body">
+      <!-- Generelt -->
+      <section class="settings__panel settings__panel--active" data-panel="general">
+        <div class="field">
+          <label for="set-language">Språk</label>
+          <select id="set-language">
+            <option value="nb" selected>Norsk (Bokmål)</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-timezone">Tidssone</label>
+          <select id="set-timezone">
+            <option value="Europe/Oslo" selected>Europe/Oslo</option>
+            <option value="UTC">UTC</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-datefmt">Datoformat</label>
+          <select id="set-datefmt">
+            <option value="dd.mm.yyyy" selected>DD.MM.YYYY</option>
+            <option value="iso">YYYY-MM-DD</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-defrange">Standard tidsrom</label>
+          <select id="set-defrange">
+            <option value="24h">Siste 24t</option>
+            <option value="7d" selected>Siste 7 dager</option>
+            <option value="30d">Siste 30 dager</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-rows">Tabellrader per side</label>
+          <select id="set-rows">
+            <option>10</option><option selected>25</option><option>50</option><option>100</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Visning -->
+      <section class="settings__panel" data-panel="display">
+        <div class="field">
+          <label for="set-theme">Tema</label>
+          <select id="set-theme">
+            <option value="dark" selected>Mørk</option>
+            <option value="light">Lys</option>
+            <option value="system">System</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-density">Tetthet</label>
+          <select id="set-density">
+            <option value="comfortable" selected>Komfort</option>
+            <option value="compact">Kompakt</option>
+          </select>
+        </div>
+        <div class="field switch">
+          <input type="checkbox" id="set-sticky" checked>
+          <label for="set-sticky">Fest topplinjen (sticky)</label>
+        </div>
+        <div class="field switch">
+          <input type="checkbox" id="set-grid" checked>
+          <label for="set-grid">Vis gridlinjer i søylediagram</label>
+        </div>
+        <div class="field switch">
+          <input type="checkbox" id="set-animations" checked>
+          <label for="set-animations">Myke animasjoner i UI</label>
+        </div>
+      </section>
+
+      <!-- Varsler -->
+      <section class="settings__panel" data-panel="notifications">
+        <div class="field switch">
+          <input type="checkbox" id="set-mail" checked>
+          <label for="set-mail">E-postvarsler</label>
+        </div>
+        <div class="field">
+          <label for="set-email">Mottaker e-post</label>
+          <input id="set-email" type="email" placeholder="soc@secure.no">
+        </div>
+        <div class="field switch">
+          <input type="checkbox" id="set-critical" checked>
+          <label for="set-critical">Kun Kritisk/Høy alvorlighet</label>
+        </div>
+        <div class="field">
+          <label for="set-digest">Sammendrag</label>
+          <select id="set-digest">
+            <option value="off">Av</option>
+            <option value="daily" selected>Daglig</option>
+            <option value="weekly">Ukentlig</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-quiet">Stille periode (DND)</label>
+          <input id="set-quiet" type="text" placeholder="22:00–06:00">
+        </div>
+        <div class="field">
+          <label for="set-webhook">Webhook (Slack/Teams)</label>
+          <input id="set-webhook" type="url" placeholder="https://hooks.example…">
+        </div>
+      </section>
+
+      <!-- Sikkerhet -->
+      <section class="settings__panel" data-panel="security">
+        <div class="field switch">
+          <input type="checkbox" id="set-2fa">
+          <label for="set-2fa">Aktiver 2FA (TOTP)</label>
+        </div>
+        <div class="field">
+          <label for="set-timeout">Sesjons-timeout (min)</label>
+          <input id="set-timeout" type="number" min="5" max="480" value="30">
+        </div>
+        <div class="field switch">
+          <input type="checkbox" id="set-mask" checked>
+          <label for="set-mask">Masker sensitive felter i UI</label>
+        </div>
+        <div class="field">
+          <label for="set-allowlist">IP-allowlist</label>
+          <textarea id="set-allowlist" rows="3" placeholder="192.0.2.0/24&#10;203.0.113.10"></textarea>
+        </div>
+      </section>
+
+      <!-- Data & API -->
+      <section class="settings__panel" data-panel="data">
+        <div class="field">
+          <label for="set-refresh">Auto-oppdatering (sek)</label>
+          <input id="set-refresh" type="number" min="0" step="5" value="0" placeholder="0 = av">
+        </div>
+        <div class="field">
+          <label for="set-api">API base URL</label>
+          <input id="set-api" type="url" placeholder="https://api.secure.no/v1">
+        </div>
+        <div class="field">
+          <label for="set-token">API-token</label>
+          <input id="set-token" type="password" placeholder="••••••••">
+        </div>
+        <div class="field">
+          <label for="set-export">Standard eksportformat</label>
+          <select id="set-export">
+            <option>CSV</option><option selected>JSON</option><option>XLSX</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Organisasjon -->
+      <section class="settings__panel" data-panel="org">
+        <div class="field">
+          <label for="set-org">Organisasjonsnavn</label>
+          <input id="set-org" type="text" placeholder="Secure Norge">
+        </div>
+        <div class="field">
+          <label for="set-role">Standardrolle</label>
+          <select id="set-role">
+            <option>Viewer</option><option>Analyst</option><option selected>Responder</option><option>Admin</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="set-policy">Standard policy-sett</label>
+          <select id="set-policy">
+            <option>Standard</option><option selected>Streng</option><option>Tilpasset</option>
+          </select>
+        </div>
+      </section>
+    </div>
+
+    <footer class="settings__footer">
+      <button type="button" class="btn" id="settingsReset">Tilbakestill</button>
+      <div class="spacer"></div>
+      <button type="button" class="btn btn--outline" id="settingsClose">Lukk</button>
+      <button type="button" class="btn btn--primary" id="settingsSave">Lagre</button>
+    </footer>
+  </div>
+
+  <!-- LOGIN POPUP -->
+  <div id="loginPopup" class="login-popup" role="dialog" aria-labelledby="loginTitle" aria-modal="false" hidden>
+    <header class="login-popup__header">
+      <h2 id="loginTitle">Logg inn</h2>
+      <button class="login-popup__close" type="button" aria-label="Lukk">✕</button>
+    </header>
+
+    <form id="loginForm" class="login-popup__body" novalidate>
+      <div class="form__field">
+        <label for="loginUser">E-post eller brukernavn</label>
+        <input id="loginUser" name="user" type="text" autocomplete="username" placeholder="fornavn.etternavn@secure.no" required />
+        <small class="field__error" id="userError" aria-live="polite"></small>
+      </div>
+
+      <div class="form__field">
+        <label for="loginPass">Passord</label>
+        <div class="password">
+          <input id="loginPass" name="pass" type="password" autocomplete="current-password" placeholder="••••••••" required />
+          <button class="password__toggle" type="button" aria-label="Vis/skjul passord">Vis</button>
+        </div>
+        <small class="field__error" id="passError" aria-live="polite"></small>
+      </div>
+
+      <div class="form__row">
+        <label class="check"><input type="checkbox" id="rememberMe" /> Husk meg</label>
+        <a class="link--muted" href="#" aria-disabled="true" tabindex="-1">Glemt passord?</a>
+      </div>
+
+      <div class="form__actions">
+        <button type="submit" class="btn btn--primary" id="loginSubmit">Logg inn</button>
+        <button type="button" class="btn" id="loginCancel">Avbryt</button>
+      </div>
+
+      <div class="form__status" id="loginStatus" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+
+  <!-- Blur-backdrop -->
+  <div id="loginBackdrop" class="login-backdrop" hidden></div>
+
+  <!-- JS -->
+  <script src="Index.js" defer></script>
+</body>
+</html>

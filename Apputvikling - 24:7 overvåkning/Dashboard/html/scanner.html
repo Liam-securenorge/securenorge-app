@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sårbarhetsscanner</title>
+
+  <!-- Felles base-stil + side-spesifikk -->
+  <link rel="stylesheet" href="/Dashboard/css/Index.css" />
+  <link rel="stylesheet" href="/Dashboard/css/scanner.css" />
+</head>
+<body>
+  <div class="shell">
+    <!-- Sidebar (samme som resten av siden) -->
+    <aside class="sidebar" aria-label="Hovednavigasjon">
+      <div class="sidebar__brand">
+        <img src="/Dashboard/img/Logo - hvit.png" alt="Secure Norge" class="sidebar__logo" />
+      </div>
+
+      <nav class="nav">
+        <div class="nav__section">Dashboards</div>
+        <a class="nav__link" href="Index.html">Oversikt</a>
+
+        <div class="nav__section">Tjenester</div>
+        <a class="nav__link" href="/Dashboard/html/pen.html">PEN-rapporter</a>
+        <a class="nav__link" href="/Dashboard/html/overvåkning.html ">24/7 overvåkning</a>
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Topbar (samme look & feel) -->
+      <header class="topbar" id="scanner">
+        <div class="topbar__inner container">
+          <div class="brand">
+          </div>
+
+          <form class="search" role="search">
+            <input class="search__input" type="search" placeholder="Søk i funn, mål, regler…" aria-label="Søk" />
+          </form>
+
+          <nav class="actions" aria-label="Hurtigvalg">
+            <button class="btn btn--ghost" type="button" aria-label="Varsler">Varslinger</button>
+            <button class="btn btn--ghost" type="button" aria-label="Innstillinger">Innstillinger</button>
+            <button class="btn btn--ghost" type="button" aria-label="Logg inn">Logg inn</button>
+          </nav>
+        </div>
+      </header>
+
+      <main class="container">
+        <!-- Sårbarhetsscanner (uendret innhold) -->
+        <section class="scanner" aria-label="Sårbarhetsscanning">
+          <header class="scanner__header">
+            <h2>Sårbarhetsscanner</h2>
+            <p class="muted">Kjør målrettede webskann mot URL-er og API-endepunkt. Resultater vises under.</p>
+          </header>
+
+          <div class="scanner-grid">
+            <!-- Venstre kolonne: Skjema + kø -->
+            <div class="scanner-left">
+              <article class="card">
+                <header class="card__header">
+                  <h3 class="card__title">Ny skann</h3>
+                </header>
+                <div class="card__body">
+                  <form id="scanForm" class="scan-form" autocomplete="off">
+                    <div class="form-row">
+                      <label for="target">Mål (URL)</label>
+                      <input id="target" name="target" type="url" placeholder="https://app.dittdomene.no" required>
+                    </div>
+
+                    <div class="form-grid">
+                      <div class="form-row">
+                        <label for="profile">Profil</label>
+                        <select id="profile" name="profile">
+                          <option value="quick">Rask (passiv + lett aktiv)</option>
+                          <option value="full">Full (aktiv + brute paths)</option>
+                          <option value="api">API (OpenAPI/Swagger)</option>
+                        </select>
+                      </div>
+
+                      <div class="form-row">
+                        <label for="depth">Dybde</label>
+                       <input id="depth" name="depth" type="range" min="1" max="5" value="3" step="0.01">
+                      </div>
+
+                      <div class="form-row">
+                        <label for="auth">Autentisering</label>
+                        <select id="auth" name="auth">
+                          <option value="none">Ingen</option>
+                          <option value="cookie" disabled>Cookie/JWT (kommer)</option>
+                        </select>
+                      </div>
+
+                      <div class="form-row">
+                        <label for="risk">Stopp ved risiko ≥</label>
+                        <select id="risk" name="risk">
+                          <option value="low">Lav</option>
+                          <option value="medium" selected>Middels</option>
+                          <option value="high">Høy</option>
+                          <option value="critical">Kritisk</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-actions">
+                      <button class="btn" type="submit">Start skann</button>
+                      <button class="btn btn--outline" type="reset">Nullstill</button>
+                    </div>
+                  </form>
+                </div>
+              </article>
+
+              <article class="card queue-card">
+                <header class="card__header">
+                  <h3 class="card__title">Kø</h3>
+                </header>
+                <div class="card__body">
+                  <ul id="scanQueue" class="queue" aria-live="polite" aria-relevant="additions removals">
+                    <li class="muted">Ingen skanner kjører ennå.</li>
+                  </ul>
+                </div>
+              </article>
+            </div>
+
+            <!-- Høyre kolonne: KPI + filter -->
+            <div class="scanner-right">
+              <article class="card">
+                <header class="card__header">
+                  <h3 class="card__title">Sammendrag</h3>
+                </header>
+                <div class="card__body kpi-vertical">
+                  <div class="kpi-mini">
+                    <div class="kpi__value" id="kpiTotal">0</div>
+                    <div class="kpi__sub">Funn totalt</div>
+                  </div>
+                  <div class="kpi-mini">
+                    <div class="kpi__value" id="kpiCritical">0</div>
+                    <div class="kpi__sub">Kritisk</div>
+                  </div>
+                  <div class="kpi-mini">
+                    <div class="kpi__value" id="kpiHigh">0</div>
+                    <div class="kpi__sub">Høy</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="card">
+                <header class="card__header">
+                  <h3 class="card__title">Filtrer funn</h3>
+                </header>
+                <div class="card__body">
+                  <div class="chip-row" id="severityChips">
+                    <button type="button" class="chip chip--on" data-sev="all">Alle</button>
+                    <button type="button" class="chip" data-sev="critical">Kritisk</button>
+                    <button type="button" class="chip" data-sev="high">Høy</button>
+                    <button type="button" class="chip" data-sev="medium">Middels</button>
+                    <button type="button" class="chip" data-sev="low">Lav</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <article class="card table-card findings-card">
+            <header class="card__header">
+              <h3 class="card__title">Siste funn</h3>
+              <div class="actions">
+                <button class="btn btn--outline" type="button" id="exportCsv" disabled>Eksporter CSV</button>
+              </div>
+            </header>
+            <div class="card__body">
+              <div class="table-wrapper">
+                <table class="table" id="findingsTable">
+                  <thead>
+                    <tr>
+                      <th>Alvorsgrad</th>
+                      <th>CVE / Regel</th>
+                      <th>Beskrivelse</th>
+                      <th>Mål</th>
+                      <th>Ressurs</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Fylles av JS -->
+                  </tbody>
+                </table>
+              </div>
+              <p class="hint">Mock-data genereres når du kjører en skann. Ingen nettverkskall gjøres fra denne demoen.</p>
+            </div>
+          </article>
+        </section>
+      </main>
+
+      <footer class="footer container">
+        <small>© 2025 Secure Norge – sårbarhetsscanner (prototype)</small>
+      </footer>
+    </div>
+  </div>
+
+  <!-- JS: felles + side-spesifikk -->
+  <script src="Index.js" defer></script>
+  <script src="scanner.js" defer></script>
+</body>
+</html>
